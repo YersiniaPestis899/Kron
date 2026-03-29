@@ -1,0 +1,142 @@
+/* ============================================================
+   KRON — PULSE Design System (Eye-Comfort Edition)
+   Neon on dark, but text lives in the comfortable blue-gray zone
+   ============================================================ */
+
+:root {
+  /* Backgrounds */
+  --void:         #0C1018;
+  --bg-card:      #111927;
+  --bg-raised:    #18253A;
+  --bg-sidebar:   #090D14;
+  --bg-header:    rgba(12, 16, 24, 0.95);
+
+  /* Text — all desaturated enough for extended reading */
+  --text-bright:  #D4E8F8;   /* headlines */
+  --text-body:    #8EB0C8;   /* primary reading text */
+  --text-muted:   #4E6E88;   /* secondary / timestamps */
+  --text-dim:     #2E4A60;   /* very secondary */
+  --text-on-accent: #0C1018;
+
+  /* Accents — desaturated from full neon, not harsh */
+  --cyan:         #2EAABB;   /* primary accent */
+  --cyan-bright:  #45C8D8;   /* hover / active */
+  --cyan-dim:     rgba(46, 170, 187, 0.12);
+  --cyan-glow:    rgba(46, 170, 187, 0.25);
+  --magenta:      #C44878;   /* breaking / alert */
+  --amber:        #B89040;   /* highlight / business */
+  --green:        #3EA878;   /* tech / positive */
+  --blue:         #4A88C8;   /* world / international */
+  --purple:       #7A60C8;   /* science */
+  --orange:       #C87040;   /* sports */
+
+  /* Borders */
+  --border:       rgba(46, 170, 187, 0.10);
+  --border-active:rgba(46, 170, 187, 0.40);
+  --border-card:  rgba(46, 170, 187, 0.07);
+
+  /* Background grid lines */
+  --grid:         rgba(46, 170, 187, 0.025);
+
+  /* Typography */
+  --font-display: 'Space Grotesk', 'Noto Sans JP', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-body:    'Noto Sans JP', 'Space Grotesk', sans-serif;
+
+  /* Spacing */
+  --sidebar-w:    220px;
+  --header-h:     56px;
+  --ticker-h:     36px;
+
+  /* Transitions */
+  --ease:         cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast:       150ms;
+  --t-mid:        250ms;
+  --t-slow:       400ms;
+}
+
+/* ── Reset ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--void);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+
+  /* Subtle grid background */
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+/* ── Utility ─────────────────────────────────────────── */
+.mono { font-family: var(--font-mono); }
+.cyan { color: var(--cyan-bright); }
+.dim  { color: var(--text-muted); }
+
+/* ── Skeleton pulse ──────────────────────────────────── */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.8; }
+}
+
+.skeleton {
+  background: var(--bg-raised);
+  border-radius: 4px;
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+/* ── Scan-line enter animation ───────────────────────── */
+@keyframes scan-enter {
+  from { clip-path: inset(0 0 100% 0); opacity: 0; }
+  to   { clip-path: inset(0 0 0% 0);   opacity: 1; }
+}
+
+.scan-enter {
+  animation: scan-enter var(--t-slow) var(--ease) both;
+}
+
+/* ── Archive mode filter ─────────────────────────────── */
+.archive-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+  z-index: 1000;
+  transition: opacity var(--t-slow);
+}
