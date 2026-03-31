@@ -1,42 +1,43 @@
 /* ============================================================
-   KRON — PULSE Design System (Eye-Comfort Edition)
-   Neon on dark, but text lives in the comfortable blue-gray zone
+   KRON — PULSE Design System v2 (Refined Cyberpunk)
+   Deeper atmosphere · Precise typography · Purposeful motion
    ============================================================ */
 
 :root {
-  /* Backgrounds */
-  --void:         #0C1018;
-  --bg-card:      #111927;
-  --bg-raised:    #18253A;
-  --bg-sidebar:   #090D14;
-  --bg-header:    rgba(12, 16, 24, 0.95);
+  /* Backgrounds — deeper void, atmospheric layering */
+  --void:         #070A12;
+  --bg-card:      #0C1620;
+  --bg-raised:    #142030;
+  --bg-sidebar:   #050809;
+  --bg-header:    rgba(7, 10, 18, 0.97);
 
-  /* Text — all desaturated enough for extended reading */
-  --text-bright:  #D4E8F8;   /* headlines */
-  --text-body:    #8EB0C8;   /* primary reading text */
-  --text-muted:   #4E6E88;   /* secondary / timestamps */
-  --text-dim:     #2E4A60;   /* very secondary */
-  --text-on-accent: #0C1018;
+  /* Text — calibrated blue-gray hierarchy */
+  --text-bright:  #E4F2FF;
+  --text-body:    #8AB8D8;
+  --text-muted:   #4C6A82;
+  --text-dim:     #283C4C;
+  --text-on-accent: #070A12;
 
-  /* Accents — desaturated from full neon, not harsh */
-  --cyan:         #2EAABB;   /* primary accent */
-  --cyan-bright:  #45C8D8;   /* hover / active */
-  --cyan-dim:     rgba(46, 170, 187, 0.12);
-  --cyan-glow:    rgba(46, 170, 187, 0.25);
-  --magenta:      #C44878;   /* breaking / alert */
-  --amber:        #B89040;   /* highlight / business */
-  --green:        #3EA878;   /* tech / positive */
-  --blue:         #4A88C8;   /* world / international */
-  --purple:       #7A60C8;   /* science */
-  --orange:       #C87040;   /* sports */
+  /* Accents — desaturated from neon, intentional */
+  --cyan:         #00C8D8;
+  --cyan-bright:  #28DCED;
+  --cyan-dim:     rgba(0, 200, 216, 0.10);
+  --cyan-glow:    rgba(0, 200, 216, 0.22);
+  --magenta:      #CC3D6C;
+  --amber:        #C09040;
+  --green:        #28C880;
+  --blue:         #3C90DC;
+  --purple:       #7858E8;
+  --orange:       #E07030;
 
   /* Borders */
-  --border:       rgba(46, 170, 187, 0.10);
-  --border-active:rgba(46, 170, 187, 0.40);
-  --border-card:  rgba(46, 170, 187, 0.07);
+  --border:       rgba(0, 200, 216, 0.08);
+  --border-active: rgba(0, 200, 216, 0.42);
+  --border-card:  rgba(0, 200, 216, 0.05);
 
-  /* Background grid lines */
-  --grid:         rgba(46, 170, 187, 0.025);
+  /* Dual-scale grid */
+  --grid:         rgba(0, 200, 216, 0.022);
+  --grid-fine:    rgba(0, 200, 216, 0.008);
 
   /* Typography */
   --font-display: 'Space Grotesk', 'Noto Sans JP', sans-serif;
@@ -44,14 +45,14 @@
   --font-body:    'Noto Sans JP', 'Space Grotesk', sans-serif;
 
   /* Spacing */
-  --sidebar-w:    220px;
+  --sidebar-w:    224px;
   --header-h:     56px;
   --ticker-h:     36px;
 
   /* Transitions */
   --ease:         cubic-bezier(0.16, 1, 0.3, 1);
-  --t-fast:       150ms;
-  --t-mid:        250ms;
+  --t-fast:       130ms;
+  --t-mid:        240ms;
   --t-slow:       400ms;
 }
 
@@ -62,6 +63,7 @@ html {
   font-size: 15px;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
 }
 
 body {
@@ -71,11 +73,13 @@ body {
   line-height: 1.65;
   overflow-x: hidden;
 
-  /* Subtle grid background */
+  /* Dual-scale grid background for depth */
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 48px 48px;
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    linear-gradient(var(--grid-fine) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-fine) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px, 12px 12px, 12px 12px;
 }
 
 a {
@@ -93,9 +97,9 @@ button {
 }
 
 /* ── Scrollbar ───────────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: var(--void); }
-::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: rgba(0, 200, 216, 0.22); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
 
 /* ── Utility ─────────────────────────────────────────── */
@@ -103,16 +107,22 @@ button {
 .cyan { color: var(--cyan-bright); }
 .dim  { color: var(--text-muted); }
 
-/* ── Skeleton pulse ──────────────────────────────────── */
+/* ── Skeleton ────────────────────────────────────────── */
 @keyframes skeleton-pulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.8; }
+  0%, 100% { opacity: 0.30; }
+  50%       { opacity: 0.60; }
 }
 
 .skeleton {
-  background: var(--bg-raised);
+  background: linear-gradient(
+    135deg,
+    var(--bg-card) 0%,
+    var(--bg-raised) 50%,
+    var(--bg-card) 100%
+  );
+  background-size: 200% 200%;
   border-radius: 4px;
-  animation: skeleton-pulse 1.6s ease-in-out infinite;
+  animation: skeleton-pulse 1.8s ease-in-out infinite;
 }
 
 /* ── Scan-line enter animation ───────────────────────── */
@@ -123,6 +133,12 @@ button {
 
 .scan-enter {
   animation: scan-enter var(--t-slow) var(--ease) both;
+}
+
+/* ── Horizontal scan (for header, etc.) ─────────────── */
+@keyframes scan-h {
+  0%   { background-position: -100% 0; }
+  100% { background-position: 300% 0; }
 }
 
 /* ── Archive mode filter ─────────────────────────────── */

@@ -53,7 +53,7 @@
 
   /* Subtle archive mode visual treatment */
   .layout.archive-mode {
-    filter: sepia(0.04) contrast(1.01);
+    filter: sepia(0.05) contrast(1.01);
   }
 
   .main {
@@ -61,7 +61,12 @@
     margin-left: var(--sidebar-w);
     padding: 28px 28px 24px;
     min-width: 0;
-    transition: margin-right var(--t-mid) var(--ease);
+    transition: margin-right var(--t-mid) var(--ease), padding-top var(--t-mid) var(--ease);
+  }
+
+  /* Push content down when archive banner is visible */
+  .layout.archive-mode .main {
+    padding-top: calc(28px + 34px);
   }
 
   .layout.panel-open .main {

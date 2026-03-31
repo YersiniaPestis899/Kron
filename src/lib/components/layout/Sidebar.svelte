@@ -11,14 +11,15 @@
 
 <aside class="sidebar" class:mobile-open={$sidebarOpen}>
   <nav class="nav">
-    <div class="nav-label mono">CHANNELS</div>
+    <div class="nav-section-label mono">CHANNELS</div>
     {#each CATEGORIES as cat}
       <button
         class="nav-item"
         class:active={$currentCategory === cat.id}
+        style="--item-color: {cat.color}"
         on:click={() => selectCat(cat.id)}
       >
-        <span class="nav-icon" style="color: {cat.color}">{cat.icon}</span>
+        <span class="nav-dot" style="background: {cat.color}"></span>
         <span class="nav-label-text">{cat.label}</span>
         {#if $categoryCounts[cat.id]}
           <span class="nav-count mono">{$categoryCounts[cat.id]}</span>
@@ -27,9 +28,9 @@
     {/each}
   </nav>
 
-  <div class="sidebar-footer mono">
-    <div class="footer-line">KRON v1.0</div>
-    <div class="footer-line dim">RSS AGGREGATOR</div>
+  <div class="sidebar-footer">
+    <span class="footer-brand mono">KRON</span>
+    <span class="footer-sub mono">v1.0 · RSS</span>
   </div>
 </aside>
 
@@ -53,11 +54,11 @@
     padding: 20px 0 12px;
   }
 
-  .nav-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
+  .nav-section-label {
+    font-size: 0.60rem;
+    letter-spacing: 0.22em;
     color: var(--text-dim);
-    padding: 0 18px 10px;
+    padding: 0 18px 12px;
     text-transform: uppercase;
   }
 
@@ -66,10 +67,10 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 9px 18px;
+    padding: 8px 18px;
     text-align: left;
     font-family: var(--font-display);
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     color: var(--text-muted);
     border-left: 2px solid transparent;
     transition: all var(--t-fast) var(--ease);
@@ -78,50 +79,76 @@
 
   .nav-item:hover {
     color: var(--text-body);
-    background: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.025);
   }
 
+  /* Active: use category color for border and subtle glow */
   .nav-item.active {
     color: var(--text-bright);
-    border-left-color: var(--cyan);
-    background: var(--cyan-dim);
+    border-left-color: var(--item-color);
+    background: rgba(255, 255, 255, 0.04);
   }
 
-  .nav-icon {
-    font-size: 0.75rem;
-    width: 16px;
-    flex-shrink: 0;
+  /* Category-colored left glow for active items */
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 56px;
+    background: linear-gradient(90deg, var(--item-color), transparent);
+    opacity: 0.10;
+    pointer-events: none;
   }
+
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    opacity: 0.50;
+    transition: opacity var(--t-fast);
+  }
+
+  .nav-item:hover .nav-dot  { opacity: 0.80; }
+  .nav-item.active .nav-dot { opacity: 1; }
 
   .nav-label-text {
     flex: 1;
   }
 
   .nav-count {
-    font-size: 0.7rem;
+    font-size: 0.66rem;
     color: var(--text-dim);
     letter-spacing: 0.04em;
+    transition: color var(--t-fast);
   }
 
   .nav-item.active .nav-count {
-    color: var(--cyan);
+    color: var(--item-color);
+    opacity: 0.75;
   }
 
+  /* ── Footer ── */
   .sidebar-footer {
     padding: 14px 18px;
     border-top: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
   }
 
-  .footer-line {
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
+  .footer-brand {
+    font-size: 0.70rem;
+    letter-spacing: 0.18em;
     color: var(--text-dim);
-    line-height: 1.8;
+    font-weight: 600;
   }
 
-  .footer-line.dim {
+  .footer-sub {
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
     color: var(--text-dim);
-    opacity: 0.5;
+    opacity: 0.45;
   }
 
   @media (max-width: 640px) {

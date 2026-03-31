@@ -14,14 +14,22 @@
   class="featured"
   style="--cat-color: {cat.color}"
 >
+  <!-- Top scan line — always slightly visible, brighter on hover -->
+  <div class="featured-scanline"></div>
+
   <div class="featured-inner">
-    <div class="featured-meta">
-      <span class="badge" style="color: {cat.color}; background: {cat.color}18; border-color: {cat.color}40;">
+    <!-- Eyebrow row -->
+    <div class="featured-eyebrow">
+      <span class="eyebrow-tag mono">TOP STORY</span>
+      <span class="eyebrow-sep">·</span>
+      <span class="badge mono" style="color: {cat.color}; border-color: {cat.color}35; background: {cat.color}10;">
         {cat.icon} {cat.label}
       </span>
-      <span class="source mono">{article.source_name}</span>
-      <span class="divider">·</span>
-      <span class="time mono">{timeAgo(article.published_at || article.fetched_at)}</span>
+      <div class="eyebrow-meta">
+        <span class="source mono">{article.source_name}</span>
+        <span class="meta-sep">·</span>
+        <span class="time mono">{timeAgo(article.published_at || article.fetched_at)}</span>
+      </div>
     </div>
 
     <h1 class="featured-title">{article.title}</h1>
@@ -30,14 +38,14 @@
       <p class="featured-summary">{article.summary.slice(0, 220)}{article.summary.length > 220 ? '…' : ''}</p>
     {/if}
 
-    <div class="featured-cta">
+    <div class="featured-cta mono">
       <span>記事を読む</span>
-      <span class="arrow">→</span>
+      <span class="cta-arrow">↗</span>
     </div>
   </div>
 
+  <!-- Background layers -->
   <div class="featured-bg"></div>
-  <div class="featured-border-glow"></div>
 </a>
 
 <style>
@@ -48,110 +56,168 @@
     border: 1px solid var(--border-card);
     border-radius: 10px;
     overflow: hidden;
-    transition: transform var(--t-mid) var(--ease),
-                box-shadow var(--t-mid) var(--ease);
+    transition:
+      transform var(--t-mid) var(--ease),
+      box-shadow var(--t-mid) var(--ease),
+      border-color var(--t-mid) var(--ease);
     animation: scan-enter var(--t-slow) var(--ease) both;
   }
 
   .featured:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--border-active);
+    border-color: rgba(0, 200, 216, 0.20);
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(0, 200, 216, 0.12),
+      0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Top scan line — low opacity always, full on hover */
+  .featured-scanline {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--cat-color) 30%,
+      var(--cat-color) 70%,
+      transparent 100%
+    );
+    opacity: 0.25;
+    transition: opacity var(--t-mid);
+    z-index: 2;
+  }
+
+  .featured:hover .featured-scanline {
+    opacity: 0.90;
   }
 
   .featured-inner {
     position: relative;
     z-index: 1;
-    padding: 32px 36px;
+    padding: 30px 34px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
 
-  .featured-meta {
+  /* ── Eyebrow ── */
+  .featured-eyebrow {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
   }
 
+  .eyebrow-tag {
+    font-size: 0.60rem;
+    letter-spacing: 0.20em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid rgba(0, 200, 216, 0.30);
+    border-radius: 3px;
+    background: rgba(0, 200, 216, 0.06);
+  }
+
+  .eyebrow-sep {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+  }
+
   .badge {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.66rem;
     letter-spacing: 0.06em;
-    padding: 3px 10px;
+    padding: 2px 8px;
     border: 1px solid;
     border-radius: 3px;
   }
 
+  .eyebrow-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
   .source {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
     letter-spacing: 0.04em;
   }
 
-  .divider { color: var(--text-dim); }
+  .meta-sep { color: var(--text-dim); }
 
   .time {
-    font-size: 0.75rem;
+    font-size: 0.70rem;
     color: var(--text-dim);
     letter-spacing: 0.04em;
   }
 
+  /* ── Title ── */
   .featured-title {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-size: clamp(1.2rem, 2.8vw, 1.9rem);
     color: var(--text-bright);
-    line-height: 1.3;
-    letter-spacing: -0.01em;
+    line-height: 1.28;
+    letter-spacing: -0.02em;
     transition: color var(--t-fast);
   }
 
   .featured:hover .featured-title { color: #fff; }
 
+  /* ── Summary ── */
   .featured-summary {
-    font-size: 0.9rem;
+    font-size: 0.90rem;
     color: var(--text-body);
-    line-height: 1.7;
+    line-height: 1.72;
     max-width: 72ch;
   }
 
+  /* ── CTA ── */
   .featured-cta {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--cyan);
     letter-spacing: 0.06em;
-    margin-top: 4px;
-    transition: gap var(--t-fast);
+    transition: gap var(--t-fast), color var(--t-fast);
   }
 
-  .featured:hover .featured-cta { gap: 14px; }
+  .featured:hover .featured-cta {
+    gap: 12px;
+    color: var(--cyan-bright);
+  }
 
-  .arrow { transition: transform var(--t-fast); }
-  .featured:hover .arrow { transform: translateX(4px); }
+  .cta-arrow {
+    font-size: 0.90rem;
+    transition: transform var(--t-fast);
+    line-height: 1;
+  }
 
+  .featured:hover .cta-arrow {
+    transform: translate(2px, -2px);
+  }
+
+  /* ── Background gradient ── */
   .featured-bg {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at 80% 50%, var(--cat-color, var(--cyan))0a, transparent 60%),
-      radial-gradient(ellipse at 20% -20%, var(--cyan-dim), transparent 50%);
+      radial-gradient(ellipse at 90% 60%, var(--cat-color, var(--cyan)) 0%, transparent 55%),
+      radial-gradient(ellipse at 10% -10%, rgba(0, 200, 216, 0.06), transparent 60%);
+    opacity: 0.06;
     pointer-events: none;
-  }
-
-  .featured-border-glow {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--cat-color, var(--cyan)), transparent);
-    opacity: 0;
     transition: opacity var(--t-mid);
   }
 
-  .featured:hover .featured-border-glow { opacity: 0.7; }
+  .featured:hover .featured-bg {
+    opacity: 0.10;
+  }
 
   @media (max-width: 640px) {
     .featured-inner {
@@ -160,12 +226,14 @@
     }
 
     .featured-title {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
     }
 
     .featured-summary {
-      font-size: 0.85rem;
-      line-height: 1.6;
+      font-size: 0.84rem;
+      line-height: 1.62;
     }
+
+    .eyebrow-meta { display: none; }
   }
 </style>

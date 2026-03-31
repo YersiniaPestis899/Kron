@@ -35,7 +35,6 @@
       for (const row of (data.categories || [])) {
         counts[row.category] = row.count;
       }
-      // Add 'all' total
       counts['all'] = Object.values(counts).reduce((a, b) => a + b, 0);
       categoryCounts.set(counts);
     } catch(e) {
@@ -43,19 +42,16 @@
     }
   }
 
-  // Single reactive block that tracks all fetch triggers.
-  // Svelte only re-runs $: blocks when values explicitly READ inside them change.
-  // All three stores must be read here, otherwise Svelte won't detect their changes.
   $: if (initialized) {
-    $currentCategory;    // category switch in Sidebar
-    $isArchiveMode;      // time machine toggle
-    $selectedTimestamp;  // snapshot selection
+    $currentCategory;
+    $isArchiveMode;
+    $selectedTimestamp;
     loadNews();
   }
 
   onMount(async () => {
-    loadCounts(); // load in background, no need to await
-    initialized = true; // triggers the $: block above → initial loadNews()
+    loadCounts();
+    initialized = true;
     const interval = setInterval(loadCounts, 60000);
     return () => clearInterval(interval);
   });
@@ -67,17 +63,26 @@
   <div class="page-title">
     <span class="cat-icon" style="color: {catInfo.color}">{catInfo.icon}</span>
     <h1>{catInfo.label}</h1>
+    {#if $totalCount > 0}
+      <span class="count mono">{$totalCount.toLocaleString()} 件</span>
+    {/if}
   </div>
-  {#if $totalCount > 0}
-    <span class="count mono">{$totalCount.toLocaleString()} 件</span>
-  {/if}
+  <div class="page-status mono">
+    {#if $loading}
+      <span class="status-dot loading"></span>
+      <span class="status-text">取得中</span>
+    {:else}
+      <span class="status-dot ready"></span>
+      <span class="status-text">最新</span>
+    {/if}
+  </div>
 </div>
 
 {#if $error}
   <div class="error-banner">
-    <span class="mono">⚠ API接続エラー</span>
-    <span>{$error}</span>
-    <button on:click={loadNews}>再試行</button>
+    <span class="mono error-label">⚠ API接続エラー</span>
+    <span class="error-msg">{$error}</span>
+    <button class="retry-btn mono" on:click={loadNews}>再試行</button>
   </div>
 {/if}
 
@@ -88,8 +93,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
     gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
   }
 
   .page-title {
@@ -99,52 +106,103 @@
   }
 
   .cat-icon {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    line-height: 1;
   }
 
   h1 {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     color: var(--text-bright);
     letter-spacing: -0.01em;
   }
 
   .count {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     color: var(--text-dim);
     letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--bg-card);
   }
 
+  .page-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.62rem;
+    letter-spacing: 0.10em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-dot.ready {
+    background: var(--green);
+    box-shadow: 0 0 5px rgba(40, 200, 128, 0.4);
+  }
+
+  .status-dot.loading {
+    background: var(--amber);
+    box-shadow: 0 0 5px rgba(192, 144, 64, 0.4);
+    animation: status-blink 0.8s ease-in-out infinite;
+  }
+
+  @keyframes status-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  .status-text {
+    color: var(--text-dim);
+  }
+
+  /* ── Error banner ── */
   .error-banner {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
-    background: rgba(196, 72, 120, 0.1);
-    border: 1px solid rgba(196, 72, 120, 0.3);
+    padding: 11px 16px;
+    background: rgba(204, 61, 108, 0.08);
+    border: 1px solid rgba(204, 61, 108, 0.25);
     border-radius: 6px;
     margin-bottom: 20px;
-    font-size: 0.85rem;
-    color: var(--text-body);
+    font-size: 0.84rem;
   }
 
-  .error-banner .mono {
+  .error-label {
     color: var(--magenta);
     letter-spacing: 0.06em;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
+    flex-shrink: 0;
   }
 
-  .error-banner button {
-    margin-left: auto;
+  .error-msg {
+    color: var(--text-body);
+    font-size: 0.82rem;
+    flex: 1;
+  }
+
+  .retry-btn {
+    font-size: 0.70rem;
+    letter-spacing: 0.06em;
     color: var(--magenta);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
     padding: 4px 10px;
-    border: 1px solid rgba(196, 72, 120, 0.4);
-    border-radius: 4px;
+    border: 1px solid rgba(204, 61, 108, 0.35);
+    border-radius: 3px;
     transition: all var(--t-fast);
+    flex-shrink: 0;
   }
 
-  .error-banner button:hover { background: rgba(196, 72, 120, 0.15); }
+  .retry-btn:hover {
+    background: rgba(204, 61, 108, 0.12);
+  }
 </style>

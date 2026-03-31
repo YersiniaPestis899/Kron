@@ -2,7 +2,6 @@
   import { articles } from '$lib/stores/news.js';
   import { derived } from 'svelte/store';
 
-  // 最新20件のタイトルをティッカー用に
   const tickerItems = derived(articles, $a =>
     $a.slice(0, 20).map(a => a.title)
   );
@@ -10,17 +9,19 @@
 
 {#if $tickerItems.length > 0}
 <div class="ticker">
-  <div class="ticker-label mono">LIVE</div>
+  <div class="ticker-label mono">
+    <span class="live-dot"></span>
+    LIVE
+  </div>
   <div class="ticker-track">
     <div class="ticker-content">
       {#each $tickerItems as title}
         <span class="ticker-item">{title}</span>
-        <span class="ticker-sep" aria-hidden="true">◆</span>
+        <span class="ticker-sep" aria-hidden="true">▸</span>
       {/each}
-      <!-- Duplicate for seamless loop -->
       {#each $tickerItems as title}
         <span class="ticker-item">{title}</span>
-        <span class="ticker-sep" aria-hidden="true">◆</span>
+        <span class="ticker-sep" aria-hidden="true">▸</span>
       {/each}
     </div>
   </div>
@@ -43,14 +44,31 @@
   .ticker-label {
     flex-shrink: 0;
     padding: 0 14px;
-    font-size: 0.65rem;
-    letter-spacing: 0.14em;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
     color: var(--cyan);
     border-right: 1px solid var(--border);
     height: 100%;
     display: flex;
     align-items: center;
+    gap: 7px;
     background: var(--cyan-dim);
+    min-width: 64px;
+  }
+
+  .live-dot {
+    width: 5px;
+    height: 5px;
+    background: var(--cyan);
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px var(--cyan);
+    animation: live-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes live-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
   }
 
   .ticker-track {
@@ -73,7 +91,7 @@
     font-family: var(--font-display);
     font-size: 0.78rem;
     color: var(--text-muted);
-    padding: 0 4px;
+    padding: 0 6px;
     transition: color var(--t-fast);
   }
 
@@ -82,9 +100,10 @@
   }
 
   .ticker-sep {
-    font-size: 0.45rem;
+    font-size: 0.50rem;
     color: var(--text-dim);
-    padding: 0 12px;
+    padding: 0 10px;
+    opacity: 0.5;
   }
 
   @keyframes ticker-scroll {
